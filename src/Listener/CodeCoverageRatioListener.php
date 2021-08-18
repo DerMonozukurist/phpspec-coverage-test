@@ -19,15 +19,10 @@ class CodeCoverageRatioListener implements EventSubscriberInterface
      */
     private $minimumCoverage;
 
-    /**
-     * CodeCoverageRatioListener constructor.
-     *
-     * @param float $minimumCoverage
-     */
-    public function __construct(CodeCoverage $coverage, $minimumCoverage)
+    public function __construct(CodeCoverage $coverage, float $minimumCoverage)
     {
         $this->coverage = $coverage;
-        $this->minimumCoverage = (float) $minimumCoverage;
+        $this->minimumCoverage = $minimumCoverage;
     }
 
     public function afterSuite(SuiteEvent $event): void
@@ -50,20 +45,14 @@ class CodeCoverageRatioListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @return float
-     */
-    private function calculateRatio(array $coverageData)
+    private function calculateRatio(array $coverageData): float
     {
         $lines = iterator_to_array($this->flattenLineCoverage($coverageData), false);
 
         return count(array_filter($lines)) / count($lines);
     }
 
-    /**
-     * @param array<string, array> $lineCoverage
-     */
-    private function flattenLineCoverage($lineCoverage): \Generator
+    private function flattenLineCoverage(array $lineCoverage): \Generator
     {
         if ($lineCoverage) {
             yield from array_shift($lineCoverage);
