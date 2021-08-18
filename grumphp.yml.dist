@@ -1,0 +1,13 @@
+grumphp:
+    process_timeout: null
+    parallel:
+        enabled: false
+        max_workers: 32
+
+    tasks:
+        phpspec:
+            verbose: true
+        phpcs:
+            standard: [PSR12]
+            ignore_patterns:
+                - /spec
