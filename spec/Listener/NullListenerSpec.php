@@ -7,7 +7,7 @@ use PhpSpec\ObjectBehavior;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * NullListener
+ * @mixin NullListener
  */
 class NullListenerSpec extends ObjectBehavior
 {
