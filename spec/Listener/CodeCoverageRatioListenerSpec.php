@@ -45,6 +45,17 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
         $this->shouldThrow(LowCoverageRatioException::class)->during('afterSuite', [$event]);
     }
 
+    public function it_should_not_throw_an_error_during_after_suite_event(SuiteEvent $event, Driver $driver)
+    {
+        $rawCoverageArray = $this->createRawCoverageArray('foobar.php', 10, 0);
+        $coverage = new CodeCoverage($driver->getWrappedObject(), new Filter());
+        $coverage->setData($rawCoverageArray);
+
+        $this->beConstructedWith($coverage, 66.68);
+
+        $this->shouldNotThrow(LowCoverageRatioException::class)->during('afterSuite', [$event]);
+    }
+
     public function let(Driver $driver)
     {
         $this->coverage = new CodeCoverage($driver->getWrappedObject(), new Filter());
