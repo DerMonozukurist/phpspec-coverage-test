@@ -49,18 +49,19 @@ class CodeCoverageRatioListener implements EventSubscriberInterface
     {
         $lines = iterator_to_array($this->flattenLineCoverage($coverageData), false);
 
-        $emptyLines = \array_filter($lines, function($item) {
-            return empty($item);
-        });
-
-        dump($emptyLines);
-
         return count(array_filter($lines)) / count($lines);
     }
 
     private function flattenLineCoverage(array $lineCoverage): \Generator
     {
         if ($lineCoverage) {
+            $lines = reset($lineCoverage);
+            $emptyLines = \array_filter($lines, function($item) {
+                return empty($item);
+            });
+
+            dump($emptyLines, key($lineCoverage));
+
             yield from array_shift($lineCoverage);
             yield from $this->flattenLineCoverage($lineCoverage);
         }
