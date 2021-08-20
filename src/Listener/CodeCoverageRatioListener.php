@@ -47,6 +47,7 @@ class CodeCoverageRatioListener implements EventSubscriberInterface
 
     private function calculateRatio(array $coverageData): float
     {
+        dump($coverageData);
         $lines = iterator_to_array($this->flattenLineCoverage($coverageData), false);
 
         return count(array_filter($lines)) / count($lines);
