@@ -27,7 +27,7 @@ class CodeCoverageRatioListener implements EventSubscriberInterface
 
     public function afterSuite(SuiteEvent $event): void
     {
-        $actualCoverageRatio = $this->simplifyRatio($this->calculateRatio($this->coverage->getData()));
+        $actualCoverageRatio = $this->simplifyRatio($this->calculateRatio($this->coverage->getData()->lineCoverage()));
 
         if ($actualCoverageRatio < $this->minimumCoverage) {
             throw new LowCoverageRatioException(sprintf(

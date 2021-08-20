@@ -9,6 +9,7 @@ use PhpSpec\ObjectBehavior;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Filter;
+use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -33,34 +34,67 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
         ]);
     }
 
-    public function it_should_throw_an_error_if_the_minimum_coverage_is_not_met(SuiteEvent $event, Driver $driver)
+    public function it_should_throw_an_error_if_the_minimum_coverage_is_not_met(SuiteEvent $event)
     {
-        $rawCoverageArray = $this->createRawCoverageArray('foobar.php', 10, 0)
-            + $this->createRawCoverageArray('acme.php', 10, 10);
-        $coverage = new CodeCoverage($driver->getWrappedObject(), new Filter());
-        $coverage->setData($rawCoverageArray);
-
-        $this->beConstructedWith($coverage, 66.68);
+        $this->beConstructedWith(
+            $coverage = new CodeCoverage($this->createDriverStub(5, 5), new Filter()),
+            75.0
+        );
+        $coverage->start('acme-foobar');
+        $coverage->stop();
 
         $this->shouldThrow(LowCoverageRatioException::class)->during('afterSuite', [$event]);
     }
 
     public function it_should_not_throw_an_error_during_after_suite_event(SuiteEvent $event, Driver $driver)
     {
-        $rawCoverageArray = $this->createRawCoverageArray('foobar.php', 10, 0);
-        $coverage = new CodeCoverage($driver->getWrappedObject(), new Filter());
-        $coverage->setData($rawCoverageArray);
-
-        $this->beConstructedWith($coverage, 66.68);
-
         $this->shouldNotThrow(LowCoverageRatioException::class)->during('afterSuite', [$event]);
     }
 
     public function let(Driver $driver)
     {
-        $this->coverage = new CodeCoverage($driver->getWrappedObject(), new Filter());
-        $this->coverage->setData($this->createRawCoverageArray('foobar.php', 10, 0));
+        $this->coverage = new CodeCoverage($this->createDriverStub(10), new Filter());
         $this->beConstructedWith($this->coverage, 100);
+    }
+
+    private function createDriverStub(int $coveredCount, int $uncoveredCount = 0): Driver
+    {
+        return new class($coveredCount, $uncoveredCount) extends Driver {
+            /**
+             * @var int
+             */
+            private $coveredCount;
+
+            /**
+             * @var int
+             */
+            private $uncoveredCount;
+
+            public function __construct(int $coveredCount, int $uncoveredCount = 0)
+            {
+                $this->coveredCount = $coveredCount;
+                $this->uncoveredCount = $uncoveredCount;
+            }
+
+            public function nameAndVersion(): string
+            {
+                return 'DriverStub';
+            }
+
+            public function start(): void
+            {
+            }
+
+            public function stop(): RawCodeCoverageData
+            {
+                $rawCoverage = [
+                    __FILE__ => array_fill(10, $this->coveredCount, 1)
+                        + array_fill(10 + $this->coveredCount, $this->uncoveredCount, -1),
+                ];
+
+                return RawCodeCoverageData::fromXdebugWithoutPathCoverage($rawCoverage);
+            }
+        };
     }
 
     /**

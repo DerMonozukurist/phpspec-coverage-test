@@ -11,6 +11,7 @@ use PhpSpec\ServiceContainer;
 use Prophecy\Argument;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\Filter;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
@@ -129,7 +130,7 @@ class ExtensionSpec extends ObjectBehavior
         $container
             ->get('code_coverage')
             ->shouldBeCalledOnce()
-            ->willReturn(new CodeCoverage($driver->getWrappedObject()))
+            ->willReturn(new CodeCoverage($driver->getWrappedObject(), new Filter()))
         ;
 
         $container
