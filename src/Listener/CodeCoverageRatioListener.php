@@ -7,7 +7,7 @@ use PhpSpec\Event\SuiteEvent;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class CodeCoverageRatioListener implements EventSubscriberInterface
+final class CodeCoverageRatioListener implements EventSubscriberInterface
 {
     /**
      * @var CodeCoverage
@@ -47,7 +47,6 @@ class CodeCoverageRatioListener implements EventSubscriberInterface
 
     private function calculateRatio(array $coverageData): float
     {
-        dump($coverageData);
         $lines = iterator_to_array($this->flattenLineCoverage($coverageData), false);
 
         return count(array_filter($lines)) / count($lines);

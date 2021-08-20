@@ -46,15 +46,18 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
         $this->shouldThrow(LowCoverageRatioException::class)->during('afterSuite', [$event]);
     }
 
-    public function it_should_not_throw_an_error_during_after_suite_event(SuiteEvent $event, Driver $driver)
+    public function it_should_not_throw_an_error_during_after_suite_event(SuiteEvent $event)
     {
-        $this->shouldNotThrow(LowCoverageRatioException::class)->during('afterSuite', [$event]);
+        $this->coverage->start('acme-foobar');
+        $this->coverage->stop();
+
+        $this->afterSuite($event);
     }
 
-    public function let(Driver $driver)
+    public function let()
     {
         $this->coverage = new CodeCoverage($this->createDriverStub(10), new Filter());
-        $this->beConstructedWith($this->coverage, 100);
+        $this->beConstructedWith($this->coverage, 100.0);
     }
 
     private function createDriverStub(int $coveredCount, int $uncoveredCount = 0): Driver
