@@ -8,10 +8,8 @@ extensions:
   FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension:
     format:
       - html
-      - clover
     output:
       html: coverage
-      clover: coverage/clover.xml
 
   Mahalay\PhpSpec\CoverageTest\Extension:
     min_coverage: 100.0
