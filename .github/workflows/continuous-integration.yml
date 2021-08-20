@@ -2,9 +2,9 @@
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, main-72]
   push:
-    branches: [main]
+    branches: [main, main-72]
 
 name: "Continuous Integration"
 
