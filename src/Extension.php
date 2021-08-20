@@ -28,7 +28,9 @@ class Extension implements BaseExtension
                     /** @var array $params */
                     $params = (!empty($params)) ? $params : ($container->getParam('code_coverage_test') ?? []);
 
-                    return $params + ['min_coverage' => 0.0];
+                    $ratio = (($params['min_coverage'] ?? 0.0) > 100.0) ? 100.0 : 0.0;
+
+                    return $params + ['min_coverage' => $ratio];
                 }
             );
 

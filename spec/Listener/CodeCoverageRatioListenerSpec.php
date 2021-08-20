@@ -64,38 +64,6 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
     }
 
     /**
-     * @param array<string, array> $rawCoverageArray
-     */
-    private function createDriverStub($rawCoverageArray): Driver
-    {
-        return new class($rawCoverageArray) implements Driver {
-            /**
-             * @var array<string, array>
-             */
-            private $rawCoverageArray;
-
-            public function __construct(array $rawCoverageArray)
-            {
-                $this->rawCoverageArray = $rawCoverageArray;
-            }
-
-            public function nameAndVersion(): string
-            {
-                return 'DriverStub';
-            }
-
-            public function start(bool $determineUnusedAndDead = true): void
-            {
-            }
-
-            public function stop(): array
-            {
-                return [];
-            }
-        };
-    }
-
-    /**
      * @param string $file
      * @param int $coveredCount
      * @param int $uncoveredCount

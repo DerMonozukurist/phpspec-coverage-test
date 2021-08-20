@@ -81,6 +81,19 @@ class ExtensionSpec extends ObjectBehavior
         $this->load($container, []);
     }
 
+    function it_should_transform_min_coverage_ratio_to_100_percent(ServiceContainer $container)
+    {
+        $expectedParams = ['min_coverage' => 100.0];
+
+        $container->define('code_coverage_test.options', Argument::that(
+            function (callable $callable) use($expectedParams, $container) {
+                return $callable($container->getWrappedObject()) === $expectedParams;
+            })
+        );
+
+        $this->load($container, ['min_coverage' => 192.81]);
+    }
+
     function it_should_register_a_NullListener_if_no_coverage_option_is_used(
         ServiceContainer $container,
         InputInterface $input
