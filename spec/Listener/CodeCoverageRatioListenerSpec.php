@@ -46,6 +46,32 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
         $this->shouldThrow(LowCoverageRatioException::class)->during('afterSuite', [$event]);
     }
 
+    public function it_should_throw_an_error_if_the_minimum_coverage_is_not_met_disregarding_lines_without_executables(
+        SuiteEvent $event
+    ) {
+        $this->beConstructedWith(
+            $coverage = new CodeCoverage($this->createDriverStub(5, 5, 5), new Filter()),
+            75.0
+        );
+        $coverage->start('acme-foobar');
+        $coverage->stop();
+
+        $this->shouldThrow(LowCoverageRatioException::class)->during('afterSuite', [$event]);
+    }
+
+    public function it_should_not_throw_an_error_if_minimum_coverage_satisfied_disregarding_lines_without_executables(
+        SuiteEvent $event
+    ) {
+        $this->beConstructedWith(
+            $coverage = new CodeCoverage($this->createDriverStub(5, 5, 5), new Filter()),
+            50.0
+        );
+        $coverage->start('acme-foobar');
+        $coverage->stop();
+
+        $this->shouldNotThrow(LowCoverageRatioException::class)->during('afterSuite', [$event]);
+    }
+
     public function it_should_not_throw_an_error_during_after_suite_event(SuiteEvent $event)
     {
         $this->coverage->start('acme-foobar');
@@ -60,9 +86,9 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
         $this->beConstructedWith($this->coverage, 100.0);
     }
 
-    private function createDriverStub(int $coveredCount, int $uncoveredCount = 0): Driver
+    private function createDriverStub(int $coveredCount, int $uncoveredCount = 0, int $irrelevantLineCount = 0): Driver
     {
-        return new class($coveredCount, $uncoveredCount) extends Driver {
+        return new class($coveredCount, $uncoveredCount, $irrelevantLineCount) extends Driver {
             /**
              * @var int
              */
@@ -73,10 +99,16 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
              */
             private $uncoveredCount;
 
-            public function __construct(int $coveredCount, int $uncoveredCount = 0)
+            /**
+             * @var int
+             */
+            private $irrelevantLineCount;
+
+            public function __construct(int $coveredCount, int $uncoveredCount = 0, int $irrelevantLineCount)
             {
                 $this->coveredCount = $coveredCount;
                 $this->uncoveredCount = $uncoveredCount;
+                $this->irrelevantLineCount = $irrelevantLineCount;
             }
 
             public function nameAndVersion(): string
@@ -92,7 +124,8 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
             {
                 $rawCoverage = [
                     __FILE__ => array_fill(10, $this->coveredCount, 1)
-                        + array_fill(10 + $this->coveredCount, $this->uncoveredCount, -1),
+                        + array_fill(10 + $this->coveredCount, $this->uncoveredCount, -1)
+                        + array_fill(10 + $this->coveredCount + $this->uncoveredCount, $this->irrelevantLineCount, -2)
                 ];
 
                 return RawCodeCoverageData::fromXdebugWithoutPathCoverage($rawCoverage);

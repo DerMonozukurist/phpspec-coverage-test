@@ -47,9 +47,11 @@ final class CodeCoverageRatioListener implements EventSubscriberInterface
 
     private function calculateRatio(array $coverageData): float
     {
+        /** @var array<array-key, array|null> $lines */
         $lines = iterator_to_array($this->flattenLineCoverage($coverageData), false);
+        $relevantLines = array_filter($lines, [$this, 'isRelevantLine']);
 
-        return count(array_filter($lines)) / count($lines);
+        return count(\array_filter($relevantLines)) / count($relevantLines);
     }
 
     private function flattenLineCoverage(array $lineCoverage): \Generator
@@ -60,6 +62,11 @@ final class CodeCoverageRatioListener implements EventSubscriberInterface
         }
     }
 
+    private function isRelevantLine(?array $line): bool
+    {
+        return !is_null($line);
+    }
+
     /**
      * @param float $ratio
      *
@@ -67,6 +74,6 @@ final class CodeCoverageRatioListener implements EventSubscriberInterface
      */
     private function simplifyRatio($ratio)
     {
-        return (ceil($ratio * 10000) / 10000) * 100;
+        return (floor($ratio * 10000) / 10000) * 100;
     }
 }
