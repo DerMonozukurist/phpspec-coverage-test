@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mahalay\PhpSpec\CoverageTest\Listener;
 
 use Mahalay\PhpSpec\CoverageTest\Exception\LowCoverageRatioException;
@@ -7,7 +9,7 @@ use PhpSpec\Event\SuiteEvent;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class CodeCoverageRatioListener implements EventSubscriberInterface
+final class CodeCoverageRatioListener implements EventSubscriberInterface
 {
     /**
      * @var CodeCoverage
@@ -47,9 +49,11 @@ class CodeCoverageRatioListener implements EventSubscriberInterface
 
     private function calculateRatio(array $coverageData): float
     {
+        /** @var array<array-key, array|null> $lines */
         $lines = iterator_to_array($this->flattenLineCoverage($coverageData), false);
+        $relevantLines = array_filter($lines, [$this, 'isRelevantLine']);
 
-        return count(array_filter($lines)) / count($lines);
+        return count(\array_filter($relevantLines)) / count($relevantLines);
     }
 
     private function flattenLineCoverage(array $lineCoverage): \Generator
@@ -60,6 +64,11 @@ class CodeCoverageRatioListener implements EventSubscriberInterface
         }
     }
 
+    private function isRelevantLine(?array $line): bool
+    {
+        return !is_null($line);
+    }
+
     /**
      * @param float $ratio
      *
@@ -67,6 +76,6 @@ class CodeCoverageRatioListener implements EventSubscriberInterface
      */
     private function simplifyRatio($ratio)
     {
-        return (ceil($ratio * 10000) / 10000) * 100;
+        return (floor($ratio * 10000) / 10000) * 100;
     }
 }

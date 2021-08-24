@@ -45,6 +45,20 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
         $this->shouldThrow(LowCoverageRatioException::class)->during('afterSuite', [$event]);
     }
 
+    public function it_should_throw_an_error_if_the_minimum_coverage_is_not_met_whilst_having_irrelevant_lines(
+        SuiteEvent $event,
+        Driver $driver
+    ) {
+        $rawCoverageArray = $this->createRawCoverageArray('foobar.php', 10, 0)
+            + $this->createRawCoverageArray('acme.php', 10, 10, 10);
+        $coverage = new CodeCoverage($driver->getWrappedObject(), new Filter());
+        $coverage->setData($rawCoverageArray);
+
+        $this->beConstructedWith($coverage, 66.68);
+
+        $this->shouldThrow(LowCoverageRatioException::class)->during('afterSuite', [$event]);
+    }
+
     public function it_should_not_throw_an_error_during_after_suite_event(SuiteEvent $event, Driver $driver)
     {
         $rawCoverageArray = $this->createRawCoverageArray('foobar.php', 10, 0);
@@ -52,6 +66,19 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
         $coverage->setData($rawCoverageArray);
 
         $this->beConstructedWith($coverage, 66.68);
+
+        $this->shouldNotThrow(LowCoverageRatioException::class)->during('afterSuite', [$event]);
+    }
+
+    public function it_should_not_throw_an_error_if_minimum_coverage_is_satisfied_whilst_having_irrelevant_lines(
+        SuiteEvent $event,
+        Driver $driver
+    ) {
+        $rawCoverageArray = $this->createRawCoverageArray('foobar.php', 10, 0, 10);
+        $coverage = new CodeCoverage($driver->getWrappedObject(), new Filter());
+        $coverage->setData($rawCoverageArray);
+
+        $this->beConstructedWith($coverage, 100.0);
 
         $this->shouldNotThrow(LowCoverageRatioException::class)->during('afterSuite', [$event]);
     }
@@ -67,14 +94,16 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
      * @param string $file
      * @param int $coveredCount
      * @param int $uncoveredCount
+     * @param int $irrelevantLineCount
      *
      * @return array<string, array>
      */
-    private function createRawCoverageArray($file, $coveredCount, $uncoveredCount): array
+    private function createRawCoverageArray($file, $coveredCount, $uncoveredCount, $irrelevantLineCount = 0): array
     {
         return [
             $file => array_fill(10, $coveredCount, [\hash('crc32', random_bytes(8))])
-                + array_fill(10 + $coveredCount, $uncoveredCount, []),
+                + array_fill(10 + $coveredCount, $uncoveredCount, [])
+                + array_fill(10 + $coveredCount + $uncoveredCount, $irrelevantLineCount, null)
         ];
     }
 }

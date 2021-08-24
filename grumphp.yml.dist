@@ -11,3 +11,4 @@ grumphp:
             standard: [PSR12]
             ignore_patterns:
                 - /spec
+        psalm: ~
