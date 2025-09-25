@@ -1,8 +1,8 @@
 <?php
 
-namespace Mahalay\PhpSpec\CoverageTest\Exception;
+namespace DerMonozukurist\PhpSpec\CoverageTest\Exception;
 
-use Mahalay\PhpSpec\CoverageTest\Exception;
+use DerMonozukurist\PhpSpec\CoverageTest\Exception;
 
 class LowCoverageRatioException extends Exception
 {

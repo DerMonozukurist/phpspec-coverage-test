@@ -1,5 +1,5 @@
 {
-    "name": "mahalay/phpspec-coverage-test",
+    "name": "der-monozukurist/phpspec-coverage-test",
     "type": "library",
     "description": "PhpSpec extension for testing code coverage",
     "keywords": [
@@ -11,27 +11,30 @@
         "code-coverage",
         "spec"
     ],
-    "homepage": "https://github.com/mahalay/phpspec-coverage-test",
+    "homepage": "https://github.com/DerMonozukurist/phpspec-coverage-test",
     "license": "MIT",
     "authors": [
         {
-            "name": "mahalay",
-            "email": "antolene@gmail.com"
+            "name": "DerMonozukurist",
+            "email": "5939615+DerMonozukurist@users.noreply.github.co"
         }
     ],
     "require": {
-        "php": ">=7.3",
-        "phpspec/phpspec": "^6.0 || ^7.0",
-        "friends-of-phpspec/phpspec-code-coverage": "^6.0"
+        "php": ">=8.4",
+        "phpspec/phpspec": "8.0.0 as 7.6.999",
+        "friends-of-phpspec/phpspec-code-coverage": "^6.5"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "^3.6",
-        "vimeo/psalm": "^4.9",
-        "phpro/grumphp": "^0.19 || ^1.0",
-        "symfony/var-dumper": "^5.3 || ^6.0"
+        "squizlabs/php_codesniffer": "^4.0",
+        "vimeo/psalm": "^6.13",
+        "phpro/grumphp": "^2.15",
+        "symfony/var-dumper": "^7.3"
     },
     "config": {
-        "bin-dir": "bin"
+        "bin-dir": "bin",
+        "allow-plugins": {
+            "phpro/grumphp": true
+        }
     },
     "suggest": {
         "ext-xdebug": "Install Xdebug to generate phpspec code coverage."
@@ -43,7 +46,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Mahalay\\PhpSpec\\CoverageTest\\": "src/"
+            "DerMonozukurist\\PhpSpec\\CoverageTest\\": "src/"
         }
     },
     "minimum-stability": "stable",
@@ -51,7 +54,7 @@
         "grumphp": "./vendor/bin/grumphp run"
     },
     "support": {
-        "issues": "https://github.com/mahalay/phpspec-coverage-test/issues",
-        "source": "https://github.com/mahalay/phpspec-coverage-test"
+        "issues": "https://github.com/DerMonozukurist/phpspec-coverage-test/issues",
+        "source": "https://github.com/DerMonozukurist/phpspec-coverage-test"
     }
 }

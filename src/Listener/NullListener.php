@@ -1,6 +1,6 @@
 <?php
 
-namespace Mahalay\PhpSpec\CoverageTest\Listener;
+namespace DerMonozukurist\PhpSpec\CoverageTest\Listener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 

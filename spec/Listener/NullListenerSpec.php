@@ -1,8 +1,8 @@
 <?php
 
-namespace spec\Mahalay\PhpSpec\CoverageTest\Listener;
+namespace spec\DerMonozukurist\PhpSpec\CoverageTest\Listener;
 
-use Mahalay\PhpSpec\CoverageTest\Listener\NullListener;
+use DerMonozukurist\PhpSpec\CoverageTest\Listener\NullListener;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 

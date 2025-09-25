@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Mahalay\PhpSpec\CoverageTest;
+namespace DerMonozukurist\PhpSpec\CoverageTest;
 
-use Mahalay\PhpSpec\CoverageTest\Listener\CodeCoverageRatioListener;
-use Mahalay\PhpSpec\CoverageTest\Listener\NullListener;
+use DerMonozukurist\PhpSpec\CoverageTest\Listener\CodeCoverageRatioListener;
+use DerMonozukurist\PhpSpec\CoverageTest\Listener\NullListener;
 use PhpSpec\Extension as BaseExtension;
 use PhpSpec\ServiceContainer;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
@@ -37,15 +37,17 @@ class Extension implements BaseExtension
         $container
             ->define(
                 'event_dispatcher.listeners.code_coverage_test',
-                static function (ServiceContainer $container) {
+                static function (ServiceContainer $container) use ($params) {
                     /** @var InputInterface $input */
                     $input = $container->get('console.input');
                     if ($input->hasOption('no-coverage') && $input->getOption('no-coverage')) {
                         return new NullListener();
                     }
 
-                    /** @var array $options */
-                    $options = $container->get('code_coverage_test.options');
+                    /** @var array $params */
+                    $params = (!empty($params)) ? $params : ($container->getParam('code_coverage_test') ?? []);
+                    $ratio = (($params['min_coverage'] ?? 0.0) > 100.0) ? 100.0 : 0.0;
+                    $options = $params + ['min_coverage' => $ratio];
 
                     /** @var CodeCoverage $coverage */
                     $coverage = $container->get('code_coverage');

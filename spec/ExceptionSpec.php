@@ -1,9 +1,9 @@
 <?php
 
-namespace spec\Mahalay\PhpSpec\CoverageTest;
+namespace spec\DerMonozukurist\PhpSpec\CoverageTest;
 
 use Exception as BaseException;
-use Mahalay\PhpSpec\CoverageTest\Exception;
+use DerMonozukurist\PhpSpec\CoverageTest\Exception;
 use PhpSpec\ObjectBehavior;
 
 /**

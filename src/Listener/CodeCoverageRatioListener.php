@@ -1,8 +1,8 @@
 <?php
 
-namespace Mahalay\PhpSpec\CoverageTest\Listener;
+namespace DerMonozukurist\PhpSpec\CoverageTest\Listener;
 
-use Mahalay\PhpSpec\CoverageTest\Exception\LowCoverageRatioException;
+use DerMonozukurist\PhpSpec\CoverageTest\Exception\LowCoverageRatioException;
 use PhpSpec\Event\SuiteEvent;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

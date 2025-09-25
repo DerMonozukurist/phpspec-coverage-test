@@ -1,10 +1,10 @@
 <?php
 
-namespace spec\Mahalay\PhpSpec\CoverageTest;
+namespace spec\DerMonozukurist\PhpSpec\CoverageTest;
 
-use Mahalay\PhpSpec\CoverageTest\Extension;
-use Mahalay\PhpSpec\CoverageTest\Listener\CodeCoverageRatioListener;
-use Mahalay\PhpSpec\CoverageTest\Listener\NullListener;
+use DerMonozukurist\PhpSpec\CoverageTest\Extension;
+use DerMonozukurist\PhpSpec\CoverageTest\Listener\CodeCoverageRatioListener;
+use DerMonozukurist\PhpSpec\CoverageTest\Listener\NullListener;
 use PhpSpec\Extension as BaseExtension;
 use PhpSpec\ObjectBehavior;
 use PhpSpec\ServiceContainer;
@@ -123,7 +123,7 @@ class ExtensionSpec extends ObjectBehavior
     ) {
         $input->hasOption('no-coverage')->willReturn(false);
         $container
-            ->get('code_coverage_test.options')
+            ->getParam('code_coverage_test')
             ->shouldBeCalledOnce()
             ->willReturn(['min_coverage' => 4.20])
         ;

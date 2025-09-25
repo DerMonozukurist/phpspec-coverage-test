@@ -1,9 +1,9 @@
 <?php
 
-namespace spec\Mahalay\PhpSpec\CoverageTest\Exception;
+namespace spec\DerMonozukurist\PhpSpec\CoverageTest\Exception;
 
-use Mahalay\PhpSpec\CoverageTest\Exception;
-use Mahalay\PhpSpec\CoverageTest\Exception\LowCoverageRatioException;
+use DerMonozukurist\PhpSpec\CoverageTest\Exception;
+use DerMonozukurist\PhpSpec\CoverageTest\Exception\LowCoverageRatioException;
 use PhpSpec\ObjectBehavior;
 
 /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mahalay\PhpSpec\CoverageTest;
+namespace DerMonozukurist\PhpSpec\CoverageTest;
 
 class Exception extends \Exception
 {

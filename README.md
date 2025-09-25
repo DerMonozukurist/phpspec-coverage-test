@@ -9,8 +9,8 @@ Create a `phpspec.yaml` or `phpspec.yaml.dist` file containing the following.
 formatter.name: pretty
 suites:
   default_suite:
-    namespace: Mahalay\PhpSpec\CoverageTest
-    psr4_prefix: Mahalay\PhpSpec\CoverageTest
+    namespace: DerMonozukurist\PhpSpec\CoverageTest
+    psr4_prefix: DerMonozukurist\PhpSpec\CoverageTest
 
 extensions:
   FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension:
@@ -19,7 +19,7 @@ extensions:
     output:
       html: coverage
 
-  Mahalay\PhpSpec\CoverageTest\Extension:
+  DerMonozukurist\PhpSpec\CoverageTest\Extension:
     min_coverage: 100.0
 ```
 Adjust these settings accordingly. Then `phpspec` on!

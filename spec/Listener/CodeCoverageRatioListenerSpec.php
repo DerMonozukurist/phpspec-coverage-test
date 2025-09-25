@@ -1,15 +1,17 @@
 <?php
 
-namespace spec\Mahalay\PhpSpec\CoverageTest\Listener;
+namespace spec\DerMonozukurist\PhpSpec\CoverageTest\Listener;
 
-use Mahalay\PhpSpec\CoverageTest\Exception\LowCoverageRatioException;
-use Mahalay\PhpSpec\CoverageTest\Listener\CodeCoverageRatioListener;
+use DerMonozukurist\PhpSpec\CoverageTest\Exception\LowCoverageRatioException;
+use DerMonozukurist\PhpSpec\CoverageTest\Listener\CodeCoverageRatioListener;
 use PhpSpec\Event\SuiteEvent;
 use PhpSpec\ObjectBehavior;
+use ReflectionClass;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Filter;
-use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
+use spec\DerMonozukurist\PhpSpec\CoverageTest\CoverageExample;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -36,10 +38,13 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
 
     public function it_should_throw_an_error_if_the_minimum_coverage_is_not_met(SuiteEvent $event)
     {
-        $this->beConstructedWith(
-            $coverage = new CodeCoverage($this->createDriverStub(5, 5), new Filter()),
-            75.0
-        );
+        $driver = $this->createDriverStub([
+            13 => Driver::LINE_EXECUTED,
+            14 => Driver::LINE_EXECUTED,
+            19 => Driver::LINE_NOT_EXECUTED,
+            20 => Driver::LINE_NOT_EXECUTED,
+        ]);
+        $this->beConstructedWith($coverage = new CodeCoverage($driver, new Filter()), 75.0);
         $coverage->start('acme-foobar');
         $coverage->stop();
 
@@ -49,10 +54,15 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
     public function it_should_throw_an_error_if_the_minimum_coverage_is_not_met_disregarding_lines_without_executables(
         SuiteEvent $event
     ) {
-        $this->beConstructedWith(
-            $coverage = new CodeCoverage($this->createDriverStub(5, 5, 5), new Filter()),
-            75.0
-        );
+        $driver = $this->createDriverStub([
+            7 => Driver::LINE_NOT_EXECUTABLE,
+            9 => Driver::LINE_NOT_EXECUTABLE,
+            13 => Driver::LINE_EXECUTED,
+            14 => Driver::LINE_EXECUTED,
+            19 => Driver::LINE_NOT_EXECUTED,
+            20 => Driver::LINE_NOT_EXECUTED,
+        ]);
+        $this->beConstructedWith($coverage = new CodeCoverage($driver, new Filter()), 75.0);
         $coverage->start('acme-foobar');
         $coverage->stop();
 
@@ -62,10 +72,17 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
     public function it_should_not_throw_an_error_if_minimum_coverage_satisfied_disregarding_lines_without_executables(
         SuiteEvent $event
     ) {
-        $this->beConstructedWith(
-            $coverage = new CodeCoverage($this->createDriverStub(5, 5, 5), new Filter()),
-            50.0
-        );
+        $driver = $this->createDriverStub([
+            7 => Driver::LINE_NOT_EXECUTABLE,
+            9 => Driver::LINE_NOT_EXECUTABLE,
+            13 => Driver::LINE_EXECUTED,
+            14 => Driver::LINE_EXECUTED,
+            19 => Driver::LINE_NOT_EXECUTED,
+            20 => Driver::LINE_NOT_EXECUTED,
+        ]);
+        $coverage = new CodeCoverage($driver, new Filter());
+        $this->beConstructedWith($coverage, 50.0);
+
         $coverage->start('acme-foobar');
         $coverage->stop();
 
@@ -82,33 +99,21 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
 
     public function let()
     {
-        $this->coverage = new CodeCoverage($this->createDriverStub(10), new Filter());
+        $driver = $this->createDriverStub([
+            13 => 1,
+            14 => 1,
+            19 => 1,
+            20 => 1,
+        ]);
+        $this->coverage = new CodeCoverage($driver, new Filter());
         $this->beConstructedWith($this->coverage, 100.0);
     }
 
-    private function createDriverStub(int $coveredCount, int $uncoveredCount = 0, int $irrelevantLineCount = 0): Driver
+    private function createDriverStub(array $xdebugCoverageData): Driver
     {
-        return new class($coveredCount, $uncoveredCount, $irrelevantLineCount) extends Driver {
-            /**
-             * @var int
-             */
-            private $coveredCount;
-
-            /**
-             * @var int
-             */
-            private $uncoveredCount;
-
-            /**
-             * @var int
-             */
-            private $irrelevantLineCount;
-
-            public function __construct(int $coveredCount, int $uncoveredCount = 0, int $irrelevantLineCount)
+        return new class($xdebugCoverageData) extends Driver {
+            public function __construct(private array $xdebugCoverageData)
             {
-                $this->coveredCount = $coveredCount;
-                $this->uncoveredCount = $uncoveredCount;
-                $this->irrelevantLineCount = $irrelevantLineCount;
             }
 
             public function nameAndVersion(): string
@@ -122,11 +127,19 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
 
             public function stop(): RawCodeCoverageData
             {
-                $rawCoverage = [
-                    __FILE__ => array_fill(10, $this->coveredCount, 1)
-                        + array_fill(10 + $this->coveredCount, $this->uncoveredCount, -1)
-                        + array_fill(10 + $this->coveredCount + $this->uncoveredCount, $this->irrelevantLineCount, -2)
-                ];
+                require_once __DIR__ . '/../CoverageExample.php';
+                $file = realpath(__DIR__ . '/../CoverageExample.php');
+
+                $rawCoverage[$file] = $this->xdebugCoverageData;
+
+//                $rawCoverage[$file][13] = self::LINE_EXECUTED;
+//                $rawCoverage[$file][14] = self::LINE_EXECUTED;
+//
+//                $rawCoverage[$file][19] = self::LINE_NOT_EXECUTED;
+//                $rawCoverage[$file][20] = self::LINE_NOT_EXECUTED;
+//
+//                $rawCoverage[$file][7] = self::LINE_NOT_EXECUTABLE;
+//                $rawCoverage[$file][9] = self::LINE_NOT_EXECUTABLE;
 
                 return RawCodeCoverageData::fromXdebugWithoutPathCoverage($rawCoverage);
             }
