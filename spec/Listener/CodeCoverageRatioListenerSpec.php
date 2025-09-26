@@ -6,12 +6,10 @@ use DerMonozukurist\PhpSpec\CoverageTest\Exception\LowCoverageRatioException;
 use DerMonozukurist\PhpSpec\CoverageTest\Listener\CodeCoverageRatioListener;
 use PhpSpec\Event\SuiteEvent;
 use PhpSpec\ObjectBehavior;
-use ReflectionClass;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Filter;
-use spec\DerMonozukurist\PhpSpec\CoverageTest\CoverageExample;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -131,15 +129,6 @@ class CodeCoverageRatioListenerSpec extends ObjectBehavior
                 $file = realpath(__DIR__ . '/../CoverageExample.php');
 
                 $rawCoverage[$file] = $this->xdebugCoverageData;
-
-//                $rawCoverage[$file][13] = self::LINE_EXECUTED;
-//                $rawCoverage[$file][14] = self::LINE_EXECUTED;
-//
-//                $rawCoverage[$file][19] = self::LINE_NOT_EXECUTED;
-//                $rawCoverage[$file][20] = self::LINE_NOT_EXECUTED;
-//
-//                $rawCoverage[$file][7] = self::LINE_NOT_EXECUTABLE;
-//                $rawCoverage[$file][9] = self::LINE_NOT_EXECUTABLE;
 
                 return RawCodeCoverageData::fromXdebugWithoutPathCoverage($rawCoverage);
             }

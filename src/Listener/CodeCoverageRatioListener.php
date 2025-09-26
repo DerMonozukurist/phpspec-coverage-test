@@ -51,7 +51,7 @@ final class CodeCoverageRatioListener implements EventSubscriberInterface
         $lines = iterator_to_array($this->flattenLineCoverage($coverageData), false);
         $relevantLines = array_filter($lines, [$this, 'isRelevantLine']);
 
-        return count(\array_filter($relevantLines)) / count($relevantLines);
+        return empty($relevantLines) ? 0 : count(\array_filter($relevantLines)) / count($relevantLines);
     }
 
     private function flattenLineCoverage(array $lineCoverage): \Generator
