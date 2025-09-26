@@ -37,7 +37,8 @@
         }
     },
     "suggest": {
-        "ext-xdebug": "Install Xdebug to generate phpspec code coverage."
+        "ext-xdebug": "For code coverage - more robust alternative to pcov",
+        "ext-pcov": "For code coverage - faster alternative to xdebug"
     },
     "extra": {
         "branch-alias": {

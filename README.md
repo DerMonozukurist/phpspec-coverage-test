@@ -27,7 +27,9 @@ Adjust these settings accordingly. Then `phpspec` on!
 $ vendor/bin/phpspec run
 ```
 
-If you don't have `xdebug` installed use `phpdbg`
-```shell
-$ phpdbg -qrr vendor/bin/phpspec run
-```
+# Code Coverage Drivers
+## Pros and cons
+| Driver | Pros                       | Cons                   |
+|--------|----------------------------|------------------------|
+| pcov   | lighweight, therefore fast | no dead code detection |
+| xdebug | full coverage              | relatively slow        |
