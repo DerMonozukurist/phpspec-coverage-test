@@ -21,8 +21,8 @@
     ],
     "require": {
         "php": ">=8.4",
-        "phpspec/phpspec": "8.0.0 as 7.6.999",
-        "friends-of-phpspec/phpspec-code-coverage": "^6.5"
+        "phpspec/phpspec": "^8.0",
+        "friends-of-phpspec/phpspec-code-coverage": "^7.0"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^4.0",
